@@ -1,0 +1,219 @@
+@import './fonts';
+
+// colors and variables
+:root {
+  --mouse-x: .5;
+}
+
+$darkblue: #000431;
+$yellow: #fff500;
+
+$animation-duration: 40s;
+$body-padding: 40px;
+$border: 7px solid $yellow;
+$max-width: 2000px;
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@mixin yellow-circle($size) {
+  background: $yellow;
+  border-radius: 50%;
+  height: $size;
+  width: $size;
+}
+
+@mixin parallax($factor) {
+  transform: translateX(calc(#{$factor}vw * var(--mouse-x)));
+}
+
+// reset
+html,
+body,
+h1,
+h2,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+// style
+html {
+  background-color: $darkblue;
+  padding: $body-padding;
+}
+
+body {
+  border: $border;
+  box-sizing: border-box;
+  color: $yellow;
+  display: flex;
+  flex-flow: column;
+  font-family: gtfr, sans-serif;
+  font-size: 16px;
+  justify-content: space-between;
+  margin: auto;
+  max-width: $max-width;
+  // take full height on HD screen, but not on higher ones
+  min-height: calc(#{"min(100vh, 1000px)"} - #{2 * $body-padding});
+  min-width: 300px;
+}
+
+// container for sliding title and subtitle
+header {
+  border-bottom: $border;
+  font-family: gtfxebo, sans-serif;
+  overflow: hidden;
+
+  h1,
+  h2 {
+    // only here for SEO
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .slider {
+    display: flex;
+
+    ul {
+      animation: slide $animation-duration linear infinite;
+      display: flex;
+      flex-flow: row nowrap;
+      list-style-type: none;
+
+      li {
+        display: flex;
+        padding-right: 1rem;
+        white-space: nowrap;
+
+        &:nth-child(2n+1) {
+          color: $darkblue;
+          // despite the name, it works on firefox too
+          -webkit-text-stroke: 2px $yellow;
+        }
+      }
+    }
+  }
+
+  .title h1,
+  .title ul {
+    font-size: 7rem;
+  }
+
+  .subtitle h2,
+  .subtitle ul {
+    font-size: 2.8rem;
+  }
+
+  .subtitle ul {
+    animation-direction: reverse;
+    padding: 5px 0;
+    text-align: right;
+
+    li:nth-child(2n+1) {
+      -webkit-text-stroke-width: 1px;
+    }
+  }
+
+  .border {
+    border-bottom: $border;
+  }
+}
+
+// pictures and text container
+main {
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-flow: row wrap-reverse;
+  justify-content: space-evenly;
+  overflow: hidden;
+  padding: 10px 10px 0;
+}
+
+.parallax {
+  flex: 1 1 400px;
+  margin: 30px 50px 0 10px;
+  max-width: 800px;
+  position: relative;
+
+  // big cirle in background
+  &::before {
+    @include parallax(1);
+    @include yellow-circle(#{"max(min(50vw, 50vh, 500px), 150px)"});
+    bottom: #{"min(20%, 60px)"};
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: -1;
+  }
+
+  // benjamin's picture
+  img {
+    @include parallax(-2);
+    display: block;
+    margin-left: 40px;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  // small circle in foreground
+  &::after {
+    @include parallax(-6);
+    @include yellow-circle(60px);
+    background: $yellow;
+    bottom: 40px;
+    content: '';
+    display: block;
+    position: absolute;
+    right: #{"min(20%, 100px)"};
+  }
+}
+
+// text on right-side
+article {
+  font-size: 20px;
+  letter-spacing: 1px;
+  line-height: 1.6rem;
+  margin: auto;
+  max-width: 650px; // avoid too long lines
+
+  .italic {
+    font-style: italic;
+  }
+
+  .underline {
+    border-bottom: 1px solid $yellow;
+  }
+
+  p {
+    margin: 1.5rem 0;
+  }
+
+  // email address and icon
+  address {
+    align-items: center;
+    display: flex;
+    margin-bottom: 20px;
+
+    img {
+      // css filters to turn the svg into yellow (didn't have the tools to edit the svg file by myself)
+      filter: invert(97%) sepia(91%) saturate(2048%) hue-rotate(349deg) brightness(99%) contrast(108%);
+      height: 1.2rem;
+      margin-right: .5rem;
+    }
+
+    a {
+      color: $yellow;
+      text-decoration: none;
+    }
+  }
+}
